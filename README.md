@@ -22,8 +22,9 @@ phrase is found on. There are a number of options that you can use with this fun
 
 ## Options
 
-    -h, --help
-    -e, --ext extensions
-          Only look for certain extensions listed after -e or --ext
+`-h, --help`
+
+`--ext extensions`
+Only look for certain extensions listed after --ext
 
 
