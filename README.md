@@ -5,6 +5,11 @@
 Clone this repo and move the `file_finder.py` file into /usr/bin as `ff`. That
 will make the command available for you to use.
 
+After you move the file, make sure you run:
+
+    $ [sudo] chmod +x /usr/bin/ff
+
+
 ### Usage
 
 By default, ff will search all files in the current directory AND all
