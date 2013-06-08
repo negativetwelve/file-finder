@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 from os import getcwd
 from os import listdir
@@ -22,7 +22,27 @@ def print_output(relative_path, filename, line):
     full_path = relative_path + filename
     path_length = len(full_path)
     num_spaces = 50 - path_length
-    print "{0}{1}{2}".format(full_path, " " * num_spaces, line.strip())
+    print "{0}{1}\t{2}".format(full_path, " " * num_spaces, line.strip())
+
+def formatted_options(options):
+    new_options = {}
+    for option in options:
+        option_text = option.split()
+        command, args = option_text[0], option_text[1:]
+        new_options[command] = args
+    return new_options
+
+def check_extension(filename, extensions):
+    if not extensions:
+        return True
+    filename_list = filename.split('.')
+
+    # If the file does not have an extension.
+    if len(filename_list) == 1:
+        return False
+
+    # In case the file has multiple extensions, we only check the last one.
+    return filename_list[-1] in extensions
 
 def search_dir(path):
     files = []
@@ -44,26 +64,32 @@ def search_file(path, f):
             relative_path = make_relative_path(path)
             print_output(relative_path, f, line)
 
-def explore(path):
+def explore(path, options=None):
     subdirectories, files = search_dir(path)
     for path, f in files:
-        search_file(path, f)
+        if check_extension(f, options.get('ext')):
+            search_file(path, f)
     for subdir in subdirectories:
-        explore(subdir)
+        explore(subdir, options=options)
 
 if __name__ == '__main__':
-    options = sys.argv[1].split(' --')
+    arguments = sys.argv
+    if len(arguments) == 1:
+        print 'Please enter text to search for or add the flag -h for help.'
+        sys.exit(0)
+
+    arguments = ' '.join(arguments[1:])
+    options = arguments.split(' --')
     if len(options) == 1:
         if options[0] in HELP_FLAGS:
             print "Use ff to find text within files."
             sys.exit(1)
 
     text_to_find = options.pop(0)
+    options = formatted_options(options)
+
     STARTING_PATH = getcwd()
     if sys.argv[1]:
-        explore(STARTING_PATH)
-    else:
-        print "Please enter text to search for."
-        sys.exit(0)
+        explore(STARTING_PATH, options=options)
 
 
