@@ -53,9 +53,10 @@ def explore(path):
 
 if __name__ == '__main__':
     options = sys.argv[1].split(' --')
+    print options
     if len(options) == 1:
         if options[0] in HELP_FLAGS:
-            print "Use ff to find text within files."
+            print "Use tf to find text within files."
             sys.exit(1)
 
     text_to_find = options.pop(0)
