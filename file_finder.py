@@ -6,6 +6,7 @@ from os.path import isdir
 from os.path import isfile
 from os.path import join
 import sys
+from termcolor import colored
 
 
 BLACKLISTED_FILE_NAMES = []
@@ -18,11 +19,11 @@ def make_relative_path(path):
     relative_path += '/'
     return relative_path
 
-def print_output(relative_path, filename, line):
+def print_output(relative_path, filename, line_number, line):
     full_path = relative_path + filename
     path_length = len(full_path)
     num_spaces = 50 - path_length
-    print "{0}{1}\t{2}".format(full_path, " " * num_spaces, line.strip())
+    print "{0}{1}\t{2}\t{3}".format(full_path, " " * num_spaces, colored(line_number, 'red'), line.strip())
 
 def formatted_options(options):
     new_options = {}
@@ -58,11 +59,13 @@ def search_dir(path):
 
 def search_file(path, f):
     lines = open(join(path, f)).readlines()
+    line_number = 1
     for line in lines:
         line = line.rstrip('\n')
         if text_to_find in line:
             relative_path = make_relative_path(path)
-            print_output(relative_path, f, line)
+            print_output(relative_path, f, line_number, line)
+        line_number += 1
 
 def explore(path, options=None):
     subdirectories, files = search_dir(path)

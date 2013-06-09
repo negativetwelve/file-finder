@@ -9,6 +9,9 @@ After you move the file, make sure you run:
 
     $ [sudo] chmod +x /usr/bin/ff
 
+Finally, make sure you have Pip, then run:
+
+    pip install termcolor
 
 ### Usage
 
