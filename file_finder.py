@@ -93,6 +93,23 @@ def explore(path, options=None):
     for subdir in subdirectories:
         explore(subdir, options=options)
 
+def help_output():
+    output = ['Use ff to find text within files.',
+              'Example usage:',
+              '',
+              '\tff def my_function',
+              '',
+              'This will find all files starting in the current directory with the given text.',
+              'It will also print out the line numbers and it will highlight the text within the line that it is on.',
+              '',
+              'Some arguments you can provide:',
+              '',
+              'Extensions, represented by: --ext',
+              'Usage:\tff def my_function --ext py',
+              'This will only search in files that have the .py extension.',
+    ]
+    return '\n'.join(output)
+
 if __name__ == '__main__':
     arguments = sys.argv
     if len(arguments) == 1:
@@ -103,7 +120,8 @@ if __name__ == '__main__':
     options = arguments.split(' --')
     if len(options) == 1:
         if options[0] in HELP_FLAGS:
-            print "Use ff to find text within files."
+            print help_output()
+
             sys.exit(1)
 
     TEXT_TO_FIND = options.pop(0)
