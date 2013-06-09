@@ -15,17 +15,27 @@ HELP_FLAGS = ['-h', '--help']
 
 
 def make_relative_path(path):
+    """Given a path and the starting path of the command, form a relative path and return it as a string."""
     relative_path = path.replace(STARTING_PATH, ".")
     relative_path += '/'
     return relative_path
 
-def print_output(relative_path, filename, line_number, line):
+def print_output(relative_path, filename, line_number, line, text_to_find):
+    """
+    Print the relative path, line number in red, and the entire line that the text is found on.
+    Color the text that we are searching for in yellow.
+    """
     full_path = relative_path + filename
     path_length = len(full_path)
-    num_spaces = 50 - path_length
-    print "{0}{1}\t{2}\t{3}".format(full_path, " " * num_spaces, colored(line_number, 'red'), line.strip())
+
+    line = line.strip().split(text_to_find)
+    line = colored(text_to_find, 'yellow').join(line)
+
+    num_spaces = 100 - path_length
+    print "{0}{1}\t{2}\t{3}".format(full_path, " " * num_spaces, colored(line_number, 'red'), line)
 
 def formatted_options(options):
+    """Converts the options from a string into a formatted dictionary."""
     new_options = {}
     for option in options:
         option_text = option.split()
@@ -34,6 +44,11 @@ def formatted_options(options):
     return new_options
 
 def check_extension(filename, extensions):
+    """
+    Checks to see if the input file has an allowed extension. If there are no allowed extensions,
+    then the file is already okay. If there are extensions and the file has no extension, then it
+    returns false.
+    """
     if not extensions:
         return True
     filename_list = filename.split('.')
@@ -46,6 +61,7 @@ def check_extension(filename, extensions):
     return filename_list[-1] in extensions
 
 def search_dir(path):
+    """Searches through the current directory and returns a list of subdirectories and a list of files in this directory."""
     files = []
     subdirectories = []
     for f in listdir(path):
@@ -58,16 +74,18 @@ def search_dir(path):
     return subdirectories, files
 
 def search_file(path, f):
+    """Looks in the current file searching for the given text."""
     lines = open(join(path, f)).readlines()
     line_number = 1
     for line in lines:
         line = line.rstrip('\n')
-        if text_to_find in line:
+        if TEXT_TO_FIND in line:
             relative_path = make_relative_path(path)
-            print_output(relative_path, f, line_number, line)
+            print_output(relative_path, f, line_number, line, TEXT_TO_FIND)
         line_number += 1
 
 def explore(path, options=None):
+    """Explore the given path recursing through subdirectories looking for files that match the given criteria."""
     subdirectories, files = search_dir(path)
     for path, f in files:
         if check_extension(f, options.get('ext')):
@@ -88,10 +106,10 @@ if __name__ == '__main__':
             print "Use ff to find text within files."
             sys.exit(1)
 
-    text_to_find = options.pop(0)
+    TEXT_TO_FIND = options.pop(0)
     options = formatted_options(options)
-
     STARTING_PATH = getcwd()
+
     if sys.argv[1]:
         explore(STARTING_PATH, options=options)
 

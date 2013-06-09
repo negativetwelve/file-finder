@@ -33,6 +33,7 @@ For example:
 
     ff def my_function --ext py
 
-The above command will only look for the text `def my_function` in files with the extention `py`.
+The above command will only look for the text `def my_function` in files with the extension `py`.
 You can chain on multiple extensions.
+
 
